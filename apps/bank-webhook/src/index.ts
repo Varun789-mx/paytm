@@ -10,40 +10,65 @@ app.post('/hdfcwebhook', async (req, res) => {
 		userId: req.body.user_identifier,
 		amount: req.body.amount
 	}
+
+	if (!paymentinformation.amount || !paymentinformation.token || !paymentinformation.userId) {
+		return res.status(400).json({
+			message: "Incomplete fields"
+		})
+	}
+
 	try {
-		const transaction = await db.$transaction([
-			db.balance.updateMany({
+		const result = await db.$transaction(async (tx) => {
+			const existingtransaction = await tx.onRampTransaction.findFirst({
+				where: {
+					token: paymentinformation.token,
+					status: "Success",
+				}
+			})
+
+			if (existingtransaction) {
+				throw new Error("Transaction already exists");
+
+			}
+			const userbalance = await tx.balance.updateMany({
 				where: {
 					userId: Number(paymentinformation.userId),
 				},
 				data: {
 					amount: {
 						increment: Number(paymentinformation.amount)
-					},
+					}
 				}
-			}),
-			db.onRampTransaction.updateMany({
+			})
+			const transactionupdate = await tx.onRampTransaction.updateMany({
 				where: {
-					token: paymentinformation.token
+					token: paymentinformation.token,
+					status: { not: "Success" }
 				},
 				data: {
-					status: "Success",
+					status: "Success"
 				}
-			})
-		])
-		console.log(transaction)
-		if (!transaction) {
-			return res.status(411).json({
-				message: "Failed"
-			})
-		}
-		res.json({
+			});
+			if (userbalance.count === 0) {
+				throw new Error("Failed to update the user's balance" + userbalance)
+			}
+			if (transactionupdate.count === 0) {
+				throw new Error("Failed to update the transaction it may already exists ")
+			}
+			return {
+				userbalance: userbalance.count,
+				transactionupdate: transactionupdate.count
+			};
+		});
+		console.log("Transaction success", result);
+
+		return res.json({
 			message: "Captured"
 		})
 	} catch (e) {
 		console.error(e);
 		res.status(411).json({
-			Message: "Error while processing"
+			Message: "Error" + e
 		})
 	}
 });

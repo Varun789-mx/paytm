@@ -27,7 +27,7 @@ model Merchant {
 model OnRampTransaction {
   id        Int          @id @default(autoincrement())
   status    OnRampStatus
-  token     String       @unique
+  token     String       @unique 
   provider  String
   amount    Int
   startTime DateTime

@@ -26,6 +26,7 @@ async function getOnRampTransactions() {
         }
     });
     return txns.map(t => ({
+        id: t.id,
         time: t.startTime,
         amount: t.amount,
         status: t.status,
@@ -33,7 +34,7 @@ async function getOnRampTransactions() {
     }))
 }
 
-export default async function() {
+export default async function () {
     const balance = await getBalance();
     const transactions = await getOnRampTransactions();
 

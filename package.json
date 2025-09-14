@@ -23,6 +23,7 @@
     "packages/*"
   ],
   "dependencies": {
+    "react-hot-toast": "^2.6.0",
     "tailwindcss": "^2.2.19"
   }
 }

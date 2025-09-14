@@ -4,9 +4,9 @@ export const OnRampTransactions = ({
     transactions
 }: {
     transactions: {
+        id:number,
         time: Date,
         amount: number,
-        // TODO: Can the type of `status` be more specific?
         status: string,
         provider: string
     }[]
@@ -20,7 +20,7 @@ export const OnRampTransactions = ({
     }
     return <Card title="Recent Transactions">
         <div className="pt-2">
-            {transactions.map(t => <div className="flex justify-between">
+            {transactions.map(t => <div  key={t.id} className="flex justify-between">
                 <div>
                     <div className="text-sm">
                         Received INR

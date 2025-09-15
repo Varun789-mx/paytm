@@ -19,23 +19,25 @@ export async function p2pTransfer(to: string, amount: number) {
         });
         if (!toUser) {
             throw new Error("User not found")
-            
+
         }
         if (toUser && from) {
+
             const Transfer = await prisma.$transaction(async (tx) => {
+                await tx.$queryRaw`SELECT * FROM "Balance" WHERE "userId" = ${Number(from)}`
                 const frombalance = await tx.balance.findUnique({
                     where: {
                         userId: Number(from)
                     }
                 });
-                if (!frombalance || frombalance.amount < amount) {
+                if (!frombalance || frombalance.amount / 10 < amount) {
                     throw new Error("Insufficent balance");
                 }
                 await tx.balance.update({
                     where: { userId: Number(from) },
                     data: {
                         amount: {
-                            decrement: amount
+                            decrement: amount * 100
                         }
                     }
                 })
@@ -45,7 +47,7 @@ export async function p2pTransfer(to: string, amount: number) {
                     },
                     data: {
                         amount: {
-                            increment: amount
+                            increment: amount * 100
                         }
                     }
                 })

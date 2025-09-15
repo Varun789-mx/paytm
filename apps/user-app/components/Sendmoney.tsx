@@ -13,8 +13,8 @@ export function Sendmoney() {
 
     const [phone, setPhone] = useState("");
     const [amount, setamount] = useState("");
-    const [loading,setloading] = useState(false);
-    
+    const [loading, setloading] = useState(false);
+
 
     const TransferMoney = async () => {
         try {
@@ -30,7 +30,7 @@ export function Sendmoney() {
             switch (transferStatus?.message) {
                 case "Success":
                     toast.success("Payment Success")
-                    
+
                     break;
                 case "Insufficent funds please add money":
                     toast.error("Insufficent funds please add money")
@@ -73,7 +73,7 @@ export function Sendmoney() {
                     <TextInput placeholder={"Number"} label="Number" onChange={(value) => { setPhone(value) }} />
                     <TextInput placeholder={"Amount"} label="Amount" onChange={(value) => { setamount(value) }} />
                     <div className="pt-4 flex justify-center">
-                        <Button onClick={formValidataion} disabled={loading?true:false} loading={loading} >Send</Button>
+                        <Button onClick={formValidataion} disabled={loading ? true : false} loading={loading} >Send</Button>
                     </div>
                 </div>
             </Card>

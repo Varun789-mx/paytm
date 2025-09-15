@@ -9,6 +9,7 @@ export async function p2pTransfer(to: string, amount: number) {
     const session = await getServerSession(authOptions);
     const from = session?.user?.id;
     try {
+
         if (!from) {
             throw new Error("Error while Transfer")
         }
@@ -23,16 +24,20 @@ export async function p2pTransfer(to: string, amount: number) {
         }
         if (toUser && from) {
 
-            const Transfer = await prisma.$transaction(async (tx) => {
-                await tx.$queryRaw`SELECT * FROM "Balance" WHERE "userId" = ${Number(from)}`
+            await prisma.$transaction(async (tx) => {
+                await tx.$queryRaw`SELECT * FROM "Balance" WHERE "userId" = ${Number(from)} FOR UPDATE`
                 const frombalance = await tx.balance.findUnique({
                     where: {
                         userId: Number(from)
                     }
                 });
+                console.log("Before sleep")
+                await new Promise(resolve => setTimeout(resolve, 3000))
                 if (!frombalance || frombalance.amount / 10 < amount) {
                     throw new Error("Insufficent balance");
                 }
+                // console.log("After sleep")
+                // await new Promise(resolve => setTimeout(resolve, 3000))
                 await tx.balance.update({
                     where: { userId: Number(from) },
                     data: {

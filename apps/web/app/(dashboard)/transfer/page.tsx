@@ -3,17 +3,17 @@ import { AddMoney } from "../../../components/AddMoneyCard";
 import { BalanceCard } from "../../../components/BalanceCard";
 import { OnRampTransactions } from "../../../components/OnRampTransactions";
 import { getServerSession } from "next-auth";
-import { authOptions } from "../../lib/author";
+import { authOptions } from "../../lib/auth";
 
 async function getBalance() {
     const session = await getServerSession(authOptions);
     const balance = await prisma.balance.findFirst({
         where: {
-            userId: Number(session?.user?.id)
+            userId: Number(session?.user.id)
         }
     });
     return {
-        amount: balance?.amount || 0,
+        amount: alance?.amount || 0,
         locked: balance?.locked || 0
     }
 }
@@ -26,6 +26,7 @@ async function getOnRampTransactions() {
         }
     });
     return txns.map(t => ({
+        id: t.id,
         time: t.startTime,
         amount: t.amount,
         status: t.status,
@@ -33,7 +34,7 @@ async function getOnRampTransactions() {
     }))
 }
 
-export default async function() {
+export default async function () {
     const balance = await getBalance();
     const transactions = await getOnRampTransactions();
 

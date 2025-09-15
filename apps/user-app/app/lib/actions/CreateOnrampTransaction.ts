@@ -7,6 +7,7 @@ import { getServerSession } from "next-auth"
 
 export async function createOnrampTransaction(provider: any, amount: string) {
     const Session = await getServerSession(authOptions);
+    console.log(Session);
     if (!Session?.user || !Session.user?.id) {
         return {
             message: "Unauthorized user"

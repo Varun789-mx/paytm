@@ -1,14 +1,18 @@
 import { Card } from "@repo/ui/card"
 
+enum TransactionStatus {
+    Success = "Success",
+    Failure = "Failure",
+    Processing = "Processing"
+}
 export const OnRampTransactions = ({
     transactions
 }: {
     transactions: {
-        id: string
+        id: number,
         time: Date,
         amount: number,
-        // TODO: Can the type of `status` be more specific?
-        status: string,
+        status: TransactionStatus
         provider: string
     }[]
 }) => {

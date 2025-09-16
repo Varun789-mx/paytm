@@ -31,13 +31,10 @@ export async function p2pTransfer(to: string, amount: number) {
                         userId: Number(from)
                     }
                 });
-                console.log("Before sleep")
-                await new Promise(resolve => setTimeout(resolve, 3000))
+               
                 if (!frombalance || frombalance.amount / 10 < amount) {
                     throw new Error("Insufficent balance");
                 }
-                // console.log("After sleep")
-                // await new Promise(resolve => setTimeout(resolve, 3000))
                 await tx.balance.update({
                     where: { userId: Number(from) },
                     data: {
@@ -54,6 +51,14 @@ export async function p2pTransfer(to: string, amount: number) {
                         amount: {
                             increment: amount * 100
                         }
+                    }
+                })
+                await tx.p2ptransaction.create({
+                    data: {
+                        fromUserId: Number(from),
+                        toUserId: Number(toUser.id),
+                        amount: (amount * 100).toString(),
+                        timestamp: new Date
                     }
                 })
                 return {

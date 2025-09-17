@@ -23,6 +23,7 @@
     "packages/*"
   ],
   "dependencies": {
+    "@next/eslint-plugin-next": "^14.2.32",
     "react-hot-toast": "^2.6.0",
     "tailwindcss": "^2.2.19"
   }

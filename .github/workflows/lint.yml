@@ -1,6 +1,6 @@
 name: Build on PR
 
-"on":
+on:
   pull_request:
     branches:
       - main
@@ -19,4 +19,7 @@ jobs:
 
       - name: Run build
         run: npm run build
+
+      - name: Generate Prisma Client
+        run: npm run db:generate 
         

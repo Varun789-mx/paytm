@@ -1,8 +1,11 @@
 {
-  "extends": "@repo/typescript-config/react-library.json",
-  "compilerOptions": {
-    "outDir": "dist"
+  "name": "@repo/store",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "recoil": "^0.7.7"
   },
-  "include": ["src"],
-  "exclude": ["node_modules", "dist"]
+  "exports": {
+    "./balance": "./src/hooks/useBalance"
+  }
 }
